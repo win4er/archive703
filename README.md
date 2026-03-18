@@ -20,11 +20,3 @@ Additional functions:
 10. Bot can provide admins statistics and information about activity
 11. Also bot can provide FAQ and can collect ideas from users for upgrading the project
 
-Current thoughts about structure:
-
-- ```admin.py``` is file for everything related to admin
-- ```backend.py``` is file for main functions that common user has
-- ```fronted.py``` is GUI file for bot
-
-So, i think thats it...
-
