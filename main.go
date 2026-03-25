@@ -16,24 +16,22 @@ import (
 
 func main() {
 	// Определяем путь к корню проекта (где находится .env файл)
-	// Из ./cmd/main.go нужно подняться на уровень выше
 	projectRoot, err := os.Getwd()
 	if err != nil {
 		log.Fatal("Failed to get working directory:", err)
 	}
-	
+
 	// Если мы в cmd, поднимаемся на уровень выше
 	if filepath.Base(projectRoot) == "cmd" {
 		projectRoot = filepath.Dir(projectRoot)
 	}
-	
+
 	envPath := filepath.Join(projectRoot, ".env")
-	
+
 	// Загружаем переменные окружения
 	err = godotenv.Load(envPath)
 	if err != nil {
 		log.Printf("Warning: .env file not found at %s, trying default location", envPath)
-		// Пробуем загрузить из текущей директории
 		err = godotenv.Load()
 		if err != nil {
 			log.Println("Warning: .env file not found, using environment variables")
@@ -46,20 +44,15 @@ func main() {
 		log.Fatal("BOT_TOKEN is not set")
 	}
 
-	// Создаем HTTP клиент с увеличенными таймаутами
+	// Адрес SOCKS5 прокси (тот, который поднял mtproto2socks)
 	httpClient := &http.Client{
-		Timeout: 30 * time.Second,
-		Transport: &http.Transport{
-			TLSHandshakeTimeout:   15 * time.Second,
-			ResponseHeaderTimeout: 15 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-			IdleConnTimeout:       30 * time.Second,
-			MaxIdleConns:          100,
-			MaxIdleConnsPerHost:   10,
-		},
-	}
+    	Timeout: 30 * time.Second,
+    	Transport: &http.Transport{
+        	TLSHandshakeTimeout: 15 * time.Second,
+    	},
+	}	
 
-	// Создаем бота с кастомным HTTP клиентом
+	// Создаём бота с кастомным HTTP клиентом
 	bot, err := tgbotapi.NewBotAPIWithClient(token, tgbotapi.APIEndpoint, httpClient)
 	if err != nil {
 		log.Fatal("Failed to create bot:", err)
